@@ -133,6 +133,16 @@ app.get('/usuarios/saldo/:id', async (req, res) => {
   }
 });
 
+app.get('/usuarios', async (req, res) => {
+  try {
+    const usuarios = await Usuario.find({}, 'nome chavePix saldo');
+    res.json(usuarios);
+  } catch (error) {
+    console.error('Erro ao listar usuários:', error);
+    res.status(500).json({ erro: 'Erro interno do servidor' });
+  }
+});
+
 // Deletar usuário
 app.delete('/usuarios/del/:id', async (req, res) => {
   const { id } = req.params;
