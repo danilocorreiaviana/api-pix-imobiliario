@@ -24,23 +24,31 @@ mongoose.connect(process.env.MONGO_URI, {
 app.post('/usuarios', async (req, res) => {
   const { nome, senha, chavePix } = req.body;
 
-  const existente = await Usuario.findOne({ nome });
-  if (existente) return res.status(400).json({ erro: 'Usuário já existe' });
+  if (!nome || !senha || !chavePix) {
+    return res.status(400).json({ erro: 'Nome, senha e chave Pix são obrigatórios' });
+  }
 
-  const pixExistente = await Usuario.findOne({ chavePix });
-  if (pixExistente) return res.status(400).json({ erro: 'Chave Pix já cadastrada' });
+  try {
+    const existente = await Usuario.findOne({ nome });
+    if (existente) return res.status(400).json({ erro: 'Usuário já existe' });
 
-  const senhaCriptografada = await bcrypt.hash(senha, 10);
-  const novo = new Usuario({
-    nome,
-    senha: senhaCriptografada,
-    chavePix,
-    saldo: 0
-  });
+    const pixExistente = await Usuario.findOne({ chavePix });
+    if (pixExistente) return res.status(400).json({ erro: 'Chave Pix já cadastrada' });
 
-  await novo.save();
+    const senhaCriptografada = await bcrypt.hash(senha, 10);
+    const novo = new Usuario({
+      nome,
+      senha: senhaCriptografada,
+      chavePix,
+      saldo: 0
+    });
 
-  res.json({ mensagem: 'Usuário criado com sucesso' });
+    await novo.save();
+    res.json({ mensagem: 'Usuário criado com sucesso' });
+  } catch (error) {
+    console.error('Erro ao criar usuário:', error);
+    res.status(500).json({ erro: 'Erro interno do servidor' });
+  }
 });
 
 // Login
