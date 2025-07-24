@@ -63,7 +63,8 @@ app.post('/login', async (req, res) => {
   res.json({
     mensagem: 'Login bem-sucedido',
     id: usuario._id,
-    nome: usuario.nome
+    nome: usuario.nome,
+    saldo: usuario.saldo
   });
 });
 
