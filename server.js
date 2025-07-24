@@ -64,7 +64,8 @@ app.post('/login', async (req, res) => {
     mensagem: 'Login bem-sucedido',
     id: usuario._id,
     nome: usuario.nome,
-    saldo: usuario.saldo
+    saldo: usuario.saldo,
+    chavePix: usuario.chavePix
   });
 });
 
